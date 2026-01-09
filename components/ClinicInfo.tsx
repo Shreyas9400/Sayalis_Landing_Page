@@ -3,10 +3,16 @@ import React from 'react';
 import { CONTACT_INFO, CLINIC_TIMINGS } from '../constants.tsx';
 
 const ClinicInfo: React.FC = () => {
+  // Use the specific provided Google Maps location URL
+  const directionsUrl = CONTACT_INFO.mapUrl;
+  
+  // Construct the embed URL based on the specific clinic name for a precise marker
+  const mapEmbedUrl = `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3768.12!2d72.9572!3d19.1720!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7b936d0000001%3A0xc6d389a9f5d37149!2sDr%20Sayali%20Dental%20Clinic!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin`;
+
   return (
     <section className="py-24 bg-white">
       <div className="container mx-auto px-6">
-        <div className="grid lg:grid-cols-2 gap-12 overflow-hidden bg-slate-50 rounded-[50px]">
+        <div className="grid lg:grid-cols-2 gap-12 overflow-hidden bg-slate-50 rounded-[50px] shadow-sm">
           <div className="p-12 lg:p-20">
             <h2 className="text-4xl font-bold text-slate-900 mb-10">Visit Our Clinic</h2>
             <div className="space-y-10">
@@ -42,14 +48,31 @@ const ClinicInfo: React.FC = () => {
               </div>
             </div>
             <div className="mt-12">
-              <a href={`https://maps.google.com/?q=${encodeURIComponent(CONTACT_INFO.address)}`} target="_blank" rel="noreferrer" className="inline-flex items-center space-x-3 bg-slate-800 text-white px-8 py-4 rounded-xl font-bold hover:bg-slate-700 transition-all shadow-lg shadow-slate-200">
+              <a href={directionsUrl} target="_blank" rel="noreferrer" className="inline-flex items-center space-x-3 bg-slate-800 text-white px-8 py-4 rounded-xl font-bold hover:bg-slate-700 transition-all shadow-lg shadow-slate-200">
                 <i className="fas fa-map"></i>
-                <span>Get Directions</span>
+                <span>Open in Google Maps</span>
               </a>
             </div>
           </div>
-          <div className="h-[400px] lg:h-auto min-h-[400px] bg-slate-200 relative">
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d241317.11609823277!2d72.74109995185966!3d19.082197839582234!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7c6306644edc1%3A0x5da4ed8f8d648c69!2sMumbai%2C%20Maharashtra!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin" className="absolute inset-0 w-full h-full border-0 grayscale invert brightness-95 opacity-80" allowFullScreen={true} loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
+          <div className="h-[400px] lg:h-auto min-h-[400px] bg-slate-200 relative overflow-hidden group">
+            <iframe 
+              src={mapEmbedUrl} 
+              className="absolute inset-0 w-full h-full border-0 grayscale invert brightness-95 opacity-80" 
+              allowFullScreen={true} 
+              loading="lazy" 
+              referrerPolicy="no-referrer-when-downgrade"
+              title="Dr Sayali Dental Clinic Location"
+            ></iframe>
+            <a 
+              href={directionsUrl} 
+              target="_blank" 
+              rel="noreferrer" 
+              className="absolute inset-0 z-10 bg-slate-900/0 hover:bg-slate-900/10 transition-colors flex items-center justify-center group"
+            >
+              <div className="bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg text-slate-800 font-bold text-sm opacity-0 group-hover:opacity-100 transition-opacity">
+                Click to Expand Map
+              </div>
+            </a>
           </div>
         </div>
       </div>

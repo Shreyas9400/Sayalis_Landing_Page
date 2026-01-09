@@ -3,6 +3,7 @@ import { Service, Offer } from './types.ts';
 
 export const CLINIC_NAME = "Dr. Sayali's Smile Care";
 export const DOCTOR_NAME = "Dr. Sayali";
+export const ADMIN_EMAIL = "drsayalidentalclinic@gmail.com";
 
 export const SERVICES: Service[] = [
   { title: "General Dentistry", description: "Comprehensive checkups and routine maintenance for oral health.", icon: "fa-tooth" },
@@ -26,7 +27,12 @@ export const CLINIC_TIMINGS = {
 };
 
 export const CONTACT_INFO = {
-  address: "102 Smile Plaza, Health Street, Near City Park, Mumbai, 400001",
+  address: "Shop No. 7A, Varadlaxmi Apartment, Gopal Krishna Gokhale Rd, Shree Ji Society, Hanuman Chowk, Mulund East, Mumbai, Maharashtra 400081",
   phone: "+91 98765 43210",
   email: "care@drsayali-smile.com",
+  mapUrl: "https://maps.app.goo.gl/GqB69875meTLjMoy9",
+  coordinates: {
+    lat: 19.172050558643633,
+    lng: 72.95726125523512
+  }
 };

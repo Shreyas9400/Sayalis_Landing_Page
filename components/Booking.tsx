@@ -1,12 +1,15 @@
 
 import React, { useState, useEffect } from 'react';
 import { CLINIC_TIMINGS } from '../constants.tsx';
+import { sendAppointmentEmails } from '../services/emailService.ts';
+import { Appointment } from '../types.ts';
 
 const Booking: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [selectedSlot, setSelectedSlot] = useState<string>('');
-  const [formData, setFormData] = useState({ name: '', phone: '', concern: '' });
+  const [formData, setFormData] = useState({ name: '', phone: '', email: '', concern: '' });
   const [bookedSlots, setBookedSlots] = useState<Record<string, string[]>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   useEffect(() => {
@@ -37,20 +40,48 @@ const Booking: React.FC = () => {
 
   const slots = generateSlots();
 
-  const handleBooking = (e: React.FormEvent) => {
+  const handleBooking = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedDate || !selectedSlot) return;
-    const newBookings = { ...bookedSlots };
-    if (!newBookings[selectedDate]) newBookings[selectedDate] = [];
-    newBookings[selectedDate].push(selectedSlot);
-    setBookedSlots(newBookings);
-    localStorage.setItem('smile_care_bookings', JSON.stringify(newBookings));
-    setIsSubmitted(true);
-    setTimeout(() => {
-      setIsSubmitted(false);
-      setFormData({ name: '', phone: '', concern: '' });
-      setSelectedSlot('');
-    }, 5000);
+    
+    setIsSubmitting(true);
+
+    const appointment: Appointment = {
+      id: Math.random().toString(36).substr(2, 9),
+      patientName: formData.name,
+      phone: formData.phone,
+      email: formData.email,
+      date: selectedDate,
+      time: selectedSlot,
+      concern: formData.concern
+    };
+
+    try {
+      // 1. Send Email Notifications
+      await sendAppointmentEmails(appointment);
+
+      // 2. Update local storage for real-time slot management
+      const newBookings = { ...bookedSlots };
+      if (!newBookings[selectedDate]) newBookings[selectedDate] = [];
+      newBookings[selectedDate].push(selectedSlot);
+      setBookedSlots(newBookings);
+      localStorage.setItem('smile_care_bookings', JSON.stringify(newBookings));
+
+      // 3. Show Success State
+      setIsSubmitted(true);
+      
+      // Clear specific form fields after some time
+      setTimeout(() => {
+        setIsSubmitted(false);
+        setFormData({ name: '', phone: '', email: '', concern: '' });
+        setSelectedSlot('');
+      }, 8000);
+    } catch (error) {
+      console.error("Booking failed:", error);
+      alert("Something went wrong. Please try again or call us.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const today = new Date();
@@ -77,11 +108,11 @@ const Booking: React.FC = () => {
                 </div>
                 <div className="flex items-start space-x-4">
                   <div className="w-10 h-10 bg-slate-700 rounded-full flex items-center justify-center shrink-0">
-                    <i className="fas fa-calendar-check"></i>
+                    <i className="fas fa-envelope-circle-check"></i>
                   </div>
                   <div>
-                    <h4 className="font-bold mb-1">Real-time Slots</h4>
-                    <p className="text-slate-400 text-sm">Bookings are confirmed in real-time for the current month.</p>
+                    <h4 className="font-bold mb-1">Confirmation Email</h4>
+                    <p className="text-slate-400 text-sm">Provide your email to receive an instant appointment summary.</p>
                   </div>
                 </div>
                 <div className="flex items-start space-x-4">
@@ -102,29 +133,43 @@ const Booking: React.FC = () => {
                     <i className="fas fa-check"></i>
                   </div>
                   <h3 className="text-3xl font-bold text-slate-900">Appointment Requested!</h3>
-                  <p className="text-slate-600">
-                    Thank you, {formData.name}. Your appointment for {selectedDate} at {selectedSlot} has been received. The clinic will confirm shortly.
-                  </p>
+                  <div className="space-y-2">
+                    <p className="text-slate-600">
+                      Thank you, <strong>{formData.name}</strong>. Your request for <strong>{selectedDate}</strong> at <strong>{selectedSlot}</strong> has been received.
+                    </p>
+                    {formData.email && (
+                      <p className="text-green-600 text-sm font-medium">
+                        <i className="fas fa-paper-plane mr-2"></i>
+                        A confirmation email has been sent to {formData.email}.
+                      </p>
+                    )}
+                    <p className="text-slate-500 text-sm italic pt-4">The clinic will confirm shortly via call/message.</p>
+                  </div>
                   <button onClick={() => setIsSubmitted(false)} className="text-slate-800 font-bold hover:underline">Book another session</button>
                 </div>
               ) : (
                 <form onSubmit={handleBooking} className="space-y-6">
                   <div className="grid md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <label className="text-sm font-bold text-slate-700">Full Name</label>
+                      <label className="text-sm font-bold text-slate-700">Full Name *</label>
                       <input type="text" required className="w-full bg-slate-50 border-none rounded-xl p-4 focus:ring-2 focus:ring-slate-200 outline-none transition-all" placeholder="John Doe" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-sm font-bold text-slate-700">Phone Number</label>
+                      <label className="text-sm font-bold text-slate-700">Phone Number *</label>
                       <input type="tel" required className="w-full bg-slate-50 border-none rounded-xl p-4 focus:ring-2 focus:ring-slate-200 outline-none transition-all" placeholder="+91 XXXXX XXXXX" value={formData.phone} onChange={e => setFormData({ ...formData, phone: e.target.value })} />
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-slate-700">Select Date</label>
+                    <label className="text-sm font-bold text-slate-700">Email Address (Optional)</label>
+                    <input type="email" className="w-full bg-slate-50 border-none rounded-xl p-4 focus:ring-2 focus:ring-slate-200 outline-none transition-all" placeholder="john@example.com" value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} />
+                    <p className="text-[10px] text-slate-400">Receive an appointment summary via email.</p>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-bold text-slate-700">Select Date *</label>
                     <input type="date" required min={firstDay} max={lastDay} className="w-full bg-slate-50 border-none rounded-xl p-4 focus:ring-2 focus:ring-slate-200 outline-none transition-all" value={selectedDate} onChange={e => { setSelectedDate(e.target.value); setSelectedSlot(''); }} />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-slate-700">Available Time Slots</label>
+                    <label className="text-sm font-bold text-slate-700">Available Time Slots *</label>
                     <div className="grid grid-cols-3 sm:grid-cols-4 gap-3 max-h-48 overflow-y-auto pr-2">
                       {slots.map(slot => {
                         const isBooked = bookedSlots[selectedDate]?.includes(slot);
@@ -138,7 +183,20 @@ const Booking: React.FC = () => {
                     <label className="text-sm font-bold text-slate-700">Dental Concern / Message</label>
                     <textarea className="w-full bg-slate-50 border-none rounded-xl p-4 focus:ring-2 focus:ring-slate-200 outline-none transition-all h-24" placeholder="e.g. Tooth ache, cleaning, etc." value={formData.concern} onChange={e => setFormData({ ...formData, concern: e.target.value })} />
                   </div>
-                  <button type="submit" disabled={!selectedSlot} className="w-full bg-slate-800 text-white py-4 rounded-xl font-bold text-lg hover:bg-slate-700 disabled:bg-slate-300 disabled:cursor-not-allowed transition-all shadow-xl shadow-slate-100">Confirm Appointment Request</button>
+                  <button 
+                    type="submit" 
+                    disabled={!selectedSlot || isSubmitting} 
+                    className="w-full bg-slate-800 text-white py-4 rounded-xl font-bold text-lg hover:bg-slate-700 disabled:bg-slate-300 disabled:cursor-not-allowed transition-all shadow-xl shadow-slate-100 flex items-center justify-center space-x-2"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <i className="fas fa-circle-notch animate-spin"></i>
+                        <span>Processing Request...</span>
+                      </>
+                    ) : (
+                      <span>Confirm Appointment Request</span>
+                    )}
+                  </button>
                 </form>
               )}
             </div>
