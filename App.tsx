@@ -1,14 +1,14 @@
 
 import React from 'react';
-import Header from './components/Header';
-import Hero from './components/Hero';
-import About from './components/About';
-import Services from './components/Services';
-import Offers from './components/Offers';
-import Booking from './components/Booking';
-import ClinicInfo from './components/ClinicInfo';
-import Chatbot from './components/Chatbot';
-import Footer from './components/Footer';
+import Header from './components/Header.tsx';
+import Hero from './components/Hero.tsx';
+import About from './components/About.tsx';
+import Services from './components/Services.tsx';
+import Offers from './components/Offers.tsx';
+import Booking from './components/Booking.tsx';
+import ClinicInfo from './components/ClinicInfo.tsx';
+import Chatbot from './components/Chatbot.tsx';
+import Footer from './components/Footer.tsx';
 
 const App: React.FC = () => {
   return (
