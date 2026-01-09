@@ -1,5 +1,5 @@
 
-import { Service, Offer } from './types';
+import { Service, Offer } from './types.ts';
 
 export const CLINIC_NAME = "Dr. Sayali's Smile Care";
 export const DOCTOR_NAME = "Dr. Sayali";

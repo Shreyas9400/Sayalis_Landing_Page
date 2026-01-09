@@ -1,21 +1,24 @@
 
 import React, { useState } from 'react';
-import { DOCTOR_NAME } from '../constants';
+import { DOCTOR_NAME } from '../constants.tsx';
 
 const About: React.FC = () => {
-  const [imgSrc, setImgSrc] = useState<string>("assets/Dr. Sayali.jpg");
-  const [retryCount, setRetryCount] = useState(0);
+  const [imgSrc, setImgSrc] = useState<string>("assets/Dr.%20Sayali.jpg");
+  const [retryIndex, setRetryIndex] = useState(0);
+
+  const fallbackPaths = [
+    "assets/Dr. Sayali.jpg",
+    "assets/sayali.jpg",
+    "assets/Dr.%20Sayali.JPG",
+    "assets/Dr. Sayali.JPG",
+    "assets/sayali.JPG",
+    "https://picsum.photos/id/64/800/1000" // Final fallback
+  ];
 
   const handleError = () => {
-    // Attempt 1: Try lowercase/simplified filename if the primary one fails
-    if (retryCount === 0) {
-      setImgSrc("assets/sayali.jpg");
-      setRetryCount(1);
-    } 
-    // Attempt 2: If both local paths fail, use professional stock placeholder
-    else if (retryCount === 1) {
-      setImgSrc("https://picsum.photos/id/64/800/1000");
-      setRetryCount(2);
+    if (retryIndex < fallbackPaths.length) {
+      setImgSrc(fallbackPaths[retryIndex]);
+      setRetryIndex(retryIndex + 1);
     }
   };
 

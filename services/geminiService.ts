@@ -18,7 +18,7 @@ CONSTRAINTS:
 `;
 
 export async function getChatResponse(message: string, history: { role: 'user' | 'model', text: string }[]) {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   
   const contents = history.map(h => ({
     role: h.role,

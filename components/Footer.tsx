@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { CLINIC_NAME } from '../constants';
+import { CLINIC_NAME } from '../constants.tsx';
 
 const Footer: React.FC = () => {
   return (
@@ -13,14 +13,12 @@ const Footer: React.FC = () => {
             </div>
             <span className="text-xl font-bold text-slate-900 tracking-tight">{CLINIC_NAME}</span>
           </div>
-          
           <div className="flex space-x-8">
             <a href="#" className="text-slate-500 hover:text-slate-800 transition-colors"><i className="fab fa-facebook-f"></i></a>
             <a href="#" className="text-slate-500 hover:text-slate-800 transition-colors"><i className="fab fa-instagram"></i></a>
             <a href="#" className="text-slate-500 hover:text-slate-800 transition-colors"><i className="fab fa-twitter"></i></a>
             <a href="#" className="text-slate-500 hover:text-slate-800 transition-colors"><i className="fab fa-linkedin-in"></i></a>
           </div>
-          
           <div className="text-slate-500 text-sm">
             &copy; {new Date().getFullYear()} {CLINIC_NAME}. All rights reserved.
           </div>
