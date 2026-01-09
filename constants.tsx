@@ -32,7 +32,7 @@ export const CONTACT_INFO = {
   email: "care@drsayali-smile.com",
   mapUrl: "https://maps.app.goo.gl/GqB69875meTLjMoy9",
   coordinates: {
-    lat: 19.172050558643633,
-    lng: 72.95726125523512
+    lat: 19.169733410639296,
+    lng: 72.95772281173011
   }
 };

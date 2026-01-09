@@ -3,11 +3,13 @@ import React from 'react';
 import { CONTACT_INFO, CLINIC_TIMINGS } from '../constants.tsx';
 
 const ClinicInfo: React.FC = () => {
-  // Use the specific provided Google Maps location URL
   const directionsUrl = CONTACT_INFO.mapUrl;
   
-  // Construct the embed URL based on the specific clinic name for a precise marker
-  const mapEmbedUrl = `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3768.12!2d72.9572!3d19.1720!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7b936d0000001%3A0xc6d389a9f5d37149!2sDr%20Sayali%20Dental%20Clinic!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin`;
+  // Precise Coordinates provided: 19.169733410639296, 72.95772281173011
+  // We use the specific Place ID for Dr Sayali Dental Clinic to ensure the pin is exactly on the shop
+  const lat = CONTACT_INFO.coordinates.lat;
+  const lng = CONTACT_INFO.coordinates.lng;
+  const mapEmbedUrl = `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3768.173!2d${lng}!3d${lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7b936d0000001%3A0xc6d389a9f5d37149!2sDr%20Sayali%20Dental%20Clinic!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin`;
 
   return (
     <section className="py-24 bg-white">
