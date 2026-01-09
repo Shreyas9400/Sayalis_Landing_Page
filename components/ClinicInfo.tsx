@@ -5,11 +5,12 @@ import { CONTACT_INFO, CLINIC_TIMINGS } from '../constants.tsx';
 const ClinicInfo: React.FC = () => {
   const directionsUrl = CONTACT_INFO.mapUrl;
   
-  // Precise Coordinates provided: 19.169733410639296, 72.95772281173011
-  // We use the specific Place ID for Dr Sayali Dental Clinic to ensure the pin is exactly on the shop
+  // Coordinates: 19.169733410639296, 72.95772281173011
+  // We use the 'q' parameter in the older embed format for coordinate-perfect pinning 
+  // without business-name offsets.
   const lat = CONTACT_INFO.coordinates.lat;
   const lng = CONTACT_INFO.coordinates.lng;
-  const mapEmbedUrl = `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3768.173!2d${lng}!3d${lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7b936d0000001%3A0xc6d389a9f5d37149!2sDr%20Sayali%20Dental%20Clinic!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin`;
+  const mapEmbedUrl = `https://maps.google.com/maps?q=${lat},${lng}&hl=en&z=18&output=embed`;
 
   return (
     <section className="py-24 bg-white">
@@ -25,6 +26,7 @@ const ClinicInfo: React.FC = () => {
                 <div>
                   <h4 className="text-lg font-bold text-slate-900 mb-2">Our Location</h4>
                   <p className="text-slate-600 leading-relaxed">{CONTACT_INFO.address}</p>
+                  <p className="text-[10px] text-slate-400 mt-1 uppercase tracking-widest font-bold">Plus Code: 5X95+V3 Mumbai</p>
                 </div>
               </div>
               <div className="flex items-start space-x-6">
@@ -51,7 +53,7 @@ const ClinicInfo: React.FC = () => {
             </div>
             <div className="mt-12">
               <a href={directionsUrl} target="_blank" rel="noreferrer" className="inline-flex items-center space-x-3 bg-slate-800 text-white px-8 py-4 rounded-xl font-bold hover:bg-slate-700 transition-all shadow-lg shadow-slate-200">
-                <i className="fas fa-map"></i>
+                <i className="fas fa-map-location-dot"></i>
                 <span>Open in Google Maps</span>
               </a>
             </div>
@@ -72,7 +74,7 @@ const ClinicInfo: React.FC = () => {
               className="absolute inset-0 z-10 bg-slate-900/0 hover:bg-slate-900/10 transition-colors flex items-center justify-center group"
             >
               <div className="bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg text-slate-800 font-bold text-sm opacity-0 group-hover:opacity-100 transition-opacity">
-                Click to Expand Map
+                Click to Expand Precise Location
               </div>
             </a>
           </div>
