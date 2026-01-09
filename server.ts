@@ -8,27 +8,48 @@ import { ADMIN_EMAIL, CLINIC_NAME, CONTACT_INFO } from './constants.tsx';
 dotenv.config();
 
 const app = express();
-// Fix: Added explicit cast to any to resolve "Argument of type 'NextHandleFunction' is not assignable to parameter of type 'PathParams'" error.
+
+/**
+ * CORS Middleware
+ * Allows the frontend (running on a different port) to communicate with this server.
+ */
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+  next();
+});
+
 app.use(express.json() as any);
 
 /**
  * SMTP Configuration
- * Uses environment variables for security.
- * Ensure EMAIL_USER and EMAIL_APP_PASSWORD are set in your deployment environment.
  */
 const transporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
   port: 587,
-  secure: false, // true for 465, false for 587
+  secure: false, 
   auth: {
     user: process.env.EMAIL_USER, 
     pass: process.env.EMAIL_APP_PASSWORD,
   },
 });
 
+// Verify SMTP connection on startup for debugging
+transporter.verify((error) => {
+  if (error) {
+    console.error('❌ SMTP Server Configuration Error:', error);
+    console.error('Check if EMAIL_USER and EMAIL_APP_PASSWORD are correct in .env');
+  } else {
+    console.log('✅ SMTP Server is ready to send confirmation emails');
+  }
+});
+
 /**
  * API Endpoint: /api/send-appointment-email
- * Receives appointment data and triggers notifications.
  */
 app.post('/api/send-appointment-email', async (req, res) => {
   const appointment: Appointment = req.body;
@@ -100,15 +121,16 @@ app.post('/api/send-appointment-email', async (req, res) => {
     }
 
     await Promise.all(tasks);
+    console.log(`✅ Appointment emails successfully sent for ${appointment.patientName}`);
     res.status(200).json({ success: true, message: 'Emails sent successfully' });
 
   } catch (error) {
     console.error('SMTP/Nodemailer Error:', error);
-    res.status(500).json({ success: false, message: 'Failed to trigger email system' });
+    res.status(500).json({ success: false, message: 'Failed to send emails via SMTP' });
   }
 });
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
-  console.log(`Email Service Server running on port ${PORT}`);
+  console.log(`🚀 Email Service Server running on http://localhost:${PORT}`);
 });
