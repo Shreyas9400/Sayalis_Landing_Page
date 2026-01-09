@@ -1,8 +1,24 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { DOCTOR_NAME } from '../constants';
 
 const About: React.FC = () => {
+  const [imgSrc, setImgSrc] = useState<string>("assets/Dr. Sayali.jpg");
+  const [retryCount, setRetryCount] = useState(0);
+
+  const handleError = () => {
+    // Attempt 1: Try lowercase/simplified filename if the primary one fails
+    if (retryCount === 0) {
+      setImgSrc("assets/sayali.jpg");
+      setRetryCount(1);
+    } 
+    // Attempt 2: If both local paths fail, use professional stock placeholder
+    else if (retryCount === 1) {
+      setImgSrc("https://picsum.photos/id/64/800/1000");
+      setRetryCount(2);
+    }
+  };
+
   return (
     <section id="about" className="py-24 bg-white">
       <div className="container mx-auto px-6">
@@ -10,18 +26,10 @@ const About: React.FC = () => {
           <div className="relative group">
             <div className="absolute -inset-4 bg-slate-50 rounded-[40px] transform rotate-3 group-hover:rotate-2 transition-transform"></div>
             <img 
-              src="assets/Dr. Sayali.jpg" 
+              src={imgSrc} 
               alt={DOCTOR_NAME} 
               className="relative w-full h-[500px] object-cover rounded-[30px] shadow-lg grayscale-[0.3] hover:grayscale-0 transition-all duration-500"
-              onError={(e) => {
-                const target = e.target as HTMLImageElement;
-                // If Dr. Sayali.jpg fails, try sayali.jpg as a secondary backup before the stock photo
-                if (!target.src.includes('sayali.jpg') && !target.src.includes('picsum')) {
-                   target.src = "assets/sayali.jpg";
-                } else {
-                   target.src = "https://picsum.photos/id/64/800/1000";
-                }
-              }}
+              onError={handleError}
             />
           </div>
           
