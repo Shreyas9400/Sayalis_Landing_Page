@@ -5,17 +5,17 @@ import { DOCTOR_NAME } from '../constants.tsx';
 /**
  * About Component
  * 
- * FIX: To resolve 404 errors, ensure the 'assets' folder is inside your 'public' directory.
- * The absolute pathing (starting with '/') ensures consistent resolution across the app.
+ * Adjusted object-position to 'object-top' to ensure the doctor's forehead 
+ * is not cropped in the portrait view.
  */
 const About: React.FC = () => {
-  // Ordered list of potential sources. We try local files first, then a high-quality remote fallback.
+  // Ordered list of potential sources.
   const imageSources = [
-    "/assets/Dr. Sayali.jpg",      // Standard path (assumes public/assets/)
-    "/assets/Dr.%20Sayali.jpg",    // URL encoded space
-    "/assets/sayali.jpg",          // Alternative naming
-    "/assets/Dr. Sayali.JPG",      // Case sensitivity check
-    "https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=1000" // Premium Medical Professional Fallback
+    "/assets/Dr. Sayali.jpg",
+    "/assets/Dr.%20Sayali.jpg",
+    "/assets/sayali.jpg",
+    "/assets/Dr. Sayali.JPG",
+    "https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=1000"
   ];
 
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -43,7 +43,7 @@ const About: React.FC = () => {
               <img 
                 src={imageSources[currentIndex]} 
                 alt={DOCTOR_NAME} 
-                className="w-full h-[650px] object-cover grayscale-[0.1] group-hover:grayscale-0 transition-all duration-1000 scale-100 group-hover:scale-105"
+                className="w-full h-[650px] object-cover object-top grayscale-[0.1] group-hover:grayscale-0 transition-all duration-1000 scale-100 group-hover:scale-105"
                 onError={handleError}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
